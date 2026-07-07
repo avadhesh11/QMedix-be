@@ -17,8 +17,17 @@ dotenv.config();
 
 const app = express();
 
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "https://q-medix-fe.vercel.app",
+  "https://q-medix-fe.vercel.app/",
+  `http://localhost:${process.env.FRONTEND_PORT || 5173}`,
+  "http://localhost:5173",
+  "http://localhost:3000"
+].filter(Boolean);
+
 app.use(cors({
-  origin: `http://localhost:${process.env.FRONTEND_PORT}`,
+  origin: allowedOrigins,
   credentials: true
 }));
 
