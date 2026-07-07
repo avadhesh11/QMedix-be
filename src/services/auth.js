@@ -365,7 +365,7 @@ export const RejectRequest=async(id,hospital_id)=>{
 
     if(error) throw error;
 
-    const { data, error:err1 } = await supabaseAdmin.auth.admin.deleteUser(id);
+    const { data, error:err1 } = await supabase.auth.admin.deleteUser(id);
     if(err1) throw err1;
     return { message: "Request Rejected Successfully." };
 
