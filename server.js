@@ -1,3 +1,4 @@
+process.env.TZ = 'Asia/Kolkata';
 import "dotenv/config";
 import app from "./src/app.js";
 
