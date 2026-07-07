@@ -1,4 +1,4 @@
-# QMedix Backend
+# QMedix-Backend
 
 [![Node.js](https://img.shields.io/badge/Node.js-20+-339933?logo=node.js)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-5-black?logo=express)](https://expressjs.com/)
