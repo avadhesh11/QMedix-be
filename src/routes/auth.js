@@ -3,6 +3,15 @@ import Auth from "../controller/auth.js";
 import { authenticate } from "../middleware/authMiddleware.js";
 import { supabase } from "../utils/supabase.js";
 import auth from "../controller/auth.js";
+
+const isProd = process.env.NODE_ENV === "production" || !!process.env.FRONTEND_URL;
+const cookieOptions = (maxAge) => ({
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
+    ...(maxAge !== undefined ? { maxAge } : {})
+});
+
 const router=express.Router();
 // router.post("/send-otp",Auth.sendotp);
 // router.post("/verify-otp",Auth.verifyOTP);
@@ -47,20 +56,10 @@ router.post("/refresh", async (req, res) => {
   const { access_token, refresh_token: new_refresh } = data.session;
 
   // new access token
-  res.cookie("access_token", access_token, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: false,
-    maxAge: 60 * 60 * 1000,
-  });
+  res.cookie("access_token", access_token, cookieOptions(60 * 60 * 1000));
 
   // rotated refresh token
-  res.cookie("refresh_token", new_refresh, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: false,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
+  res.cookie("refresh_token", new_refresh, cookieOptions(7 * 24 * 60 * 60 * 1000));
 
   res.json({
     message: "Access token refreshed",
@@ -69,17 +68,8 @@ router.post("/refresh", async (req, res) => {
 });
 router.post("/logout",async(req,res)=>{
  try {
-    res.clearCookie("access_token", {
-      httpOnly: true,
-      secure: false, //remember-- to be set true if https
-      sameSite: "lax"
-    });
-
-    res.clearCookie("refresh_token", {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax"
-    });
+    res.clearCookie("access_token", cookieOptions());
+    res.clearCookie("refresh_token", cookieOptions());
 
     return res.status(200).json({
       message: "Logged out successfully"
